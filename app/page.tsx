@@ -21,6 +21,8 @@ import {
   TrendingUp,
   Heart,
   Search,
+  ShoppingCart,
+  X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -49,6 +51,7 @@ const initialProducts = [
     isNew: false,
     isBestSeller: true,
     createdAt: new Date().toISOString(),
+    sizes: ["P", "M", "G"],
   },
   {
     id: 2,
@@ -66,6 +69,7 @@ const initialProducts = [
     isNew: true,
     isBestSeller: false,
     createdAt: new Date().toISOString(),
+    sizes: ["P", "M", "G"],
   },
   {
     id: 3,
@@ -83,6 +87,7 @@ const initialProducts = [
     isNew: false,
     isBestSeller: true,
     createdAt: new Date().toISOString(),
+    sizes: ["P", "M", "G"],
   },
   {
     id: 4,
@@ -100,6 +105,7 @@ const initialProducts = [
     isNew: false,
     isBestSeller: false,
     createdAt: new Date().toISOString(),
+    sizes: ["P", "M", "G"],
   },
   {
     id: 5,
@@ -117,6 +123,7 @@ const initialProducts = [
     isNew: true,
     isBestSeller: false,
     createdAt: new Date().toISOString(),
+    sizes: ["P", "M", "G"],
   },
   {
     id: 6,
@@ -134,6 +141,7 @@ const initialProducts = [
     isNew: false,
     isBestSeller: true,
     createdAt: new Date().toISOString(),
+    sizes: ["P", "M", "G"],
   },
   {
     id: 7,
@@ -151,6 +159,7 @@ const initialProducts = [
     isNew: false,
     isBestSeller: true,
     createdAt: new Date().toISOString(),
+    sizes: ["P", "M", "G"],
   },
   {
     id: 8,
@@ -168,6 +177,7 @@ const initialProducts = [
     isNew: true,
     isBestSeller: false,
     createdAt: new Date().toISOString(),
+    sizes: ["P", "M", "G"],
   },
 ]
 
@@ -184,7 +194,6 @@ const categories = [
 export default function RVStore() {
   const [currentSection, setCurrentSection] = useState("inicio")
   const [products, setProducts] = useState(initialProducts)
-  const [selectedProduct, setSelectedProduct] = useState(null)
   const [isAdmin, setIsAdmin] = useState(false)
   const [adminPassword, setAdminPassword] = useState("")
   const [showAdminLogin, setShowAdminLogin] = useState(false)
@@ -226,6 +235,14 @@ export default function RVStore() {
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState("")
   const [isUploading, setIsUploading] = useState(false)
+
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [showProductModal, setShowProductModal] = useState(false)
+
+  const handleProductClick = (product) => {
+    setSelectedProduct(product)
+    setShowProductModal(true)
+  }
 
   // Simulação de loading inicial
   useEffect(() => {
@@ -643,6 +660,7 @@ Obrigado pela preferência! 🙏`
         className={`group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-0 overflow-hidden ${
           featured ? "ring-2 ring-gradient-to-r from-purple-500 to-pink-500" : ""
         } ${compact ? "h-full" : ""}`}
+        onClick={() => !isAdminView && handleProductClick(product)}
       >
         <CardContent className="p-0">
           <div className={`${compact ? "aspect-[4/3]" : "aspect-square"} relative overflow-hidden`}>
@@ -688,7 +706,7 @@ Obrigado pela preferência! 🙏`
 
             {/* Admin Controls */}
             {isAdminView && (
-              <div className="absolute bottom-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute bottom-2 right-2 flex gap-1 transition-opacity duration-300">
                 <Button
                   size="sm"
                   variant="secondary"
@@ -717,13 +735,15 @@ Obrigado pela preferência! 🙏`
             )}
           </div>
 
-          <div className={`${compact ? "p-3" : "p-6"}`}>
+          <div className={`${compact ? "p-2 sm:p-3" : "p-3 sm:p-6"}`}>
             <h4
-              className={`font-bold ${compact ? "text-lg mb-1" : "text-xl mb-2"} text-gray-900 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 transition-all duration-300`}
+              className={`font-bold ${compact ? "text-base sm:text-lg mb-1" : "text-lg sm:text-xl mb-2"} text-gray-900 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 transition-all duration-300`}
             >
               {product.name}
             </h4>
-            <p className={`text-gray-600 text-sm ${compact ? "mb-2 line-clamp-1" : "mb-4 line-clamp-2"}`}>
+            <p
+              className={`text-gray-600 ${compact ? "text-xs sm:text-sm mb-2 line-clamp-1" : "text-sm mb-4 line-clamp-2"}`}
+            >
               {product.description}
             </p>
 
@@ -758,49 +778,54 @@ Obrigado pela preferência! 🙏`
               </div>
             )}
 
-            <div className={`flex justify-between items-center ${compact ? "mb-2" : "mb-4"}`}>
+            <div className="flex items-center justify-between">
               <div className="flex flex-col">
-                {product.isPromotion && product.originalPrice > product.price && (
-                  <span className="text-sm text-gray-500 line-through">R$ {product.originalPrice.toFixed(2)}</span>
+                {product.originalPrice && product.originalPrice > product.price && (
+                  <span className="text-xs sm:text-sm text-gray-400 line-through">
+                    R$ {product.originalPrice.toFixed(2)}
+                  </span>
                 )}
                 <span
-                  className={`${compact ? "text-2xl" : "text-3xl"} font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent`}
+                  className={`font-bold ${compact ? "text-lg sm:text-xl" : "text-xl sm:text-2xl"} bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent`}
                 >
                   R$ {product.price.toFixed(2)}
                 </span>
               </div>
-            </div>
 
-            {/* Size Selector */}
-            {!isAdminView && showSizeSelector && (
-              <div className={`${compact ? "mb-2" : "mb-4"} p-3 bg-gray-50 rounded-lg`}>
-                <Label className="text-sm font-medium text-gray-700 mb-2 block">Selecione o tamanho:</Label>
-                <div className="flex gap-2">
-                  {["P", "M", "G", "GG", "XG"].map((size) => (
-                    <Button
-                      key={size}
-                      variant={selectedSize === size ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setSelectedSize(size)}
-                      className="w-8 h-8 p-0 rounded-full text-xs"
-                    >
-                      {size}
-                    </Button>
-                  ))}
+              {!isAdminView && (
+                <div className="flex flex-col gap-1 sm:gap-2">
+                  {showSizeSelector && (
+                    <div className="flex gap-1 mb-2">
+                      {product.sizes.map((size) => (
+                        <Button
+                          key={size}
+                          size="sm"
+                          variant={selectedSize === size ? "default" : "outline"}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectedSize(size)
+                          }}
+                          className="text-xs px-2 py-1 h-6"
+                        >
+                          {size}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                  <Button
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleAddToCart()
+                    }}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2"
+                  >
+                    <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                    Comprar
+                  </Button>
                 </div>
-              </div>
-            )}
-
-            {!isAdminView && (
-              <Button
-                onClick={handleAddToCart}
-                data-product-id={product.id}
-                className={`w-full bg-gradient-to-r from-gray-900 to-black hover:from-black hover:to-gray-800 text-white ${compact ? "py-2 text-sm" : "py-3"} rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl`}
-              >
-                {showSizeSelector && !selectedSize ? "Escolha o tamanho" : "Adicionar ao Carrinho"}
-                <ShoppingBag className={`${compact ? "h-3 w-3" : "h-4 w-4"} ml-2`} />
-              </Button>
-            )}
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -883,16 +908,21 @@ Obrigado pela preferência! 🙏`
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 overflow-x-hidden">
       {/* Header Premium */}
       <header className="border-b border-gray-200/50 sticky top-0 bg-white/80 backdrop-blur-md z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-20">
             <div className="flex items-center">
-              <h1 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-gray-900 via-black to-gray-800 bg-clip-text text-transparent">
-                RV STORE
-              </h1>
-              <div className="ml-2 md:ml-3 w-1.5 h-1.5 md:w-2 md:h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse"></div>
+              <div className="flex items-center">
+                <Image
+                  src="/rv-store-logo.png"
+                  alt="RV Store Logo"
+                  width={40}
+                  height={40}
+                  className="md:w-12 md:h-12 rounded-full"
+                />
+              </div>
             </div>
 
             <Navigation />
@@ -1492,6 +1522,15 @@ Obrigado pela preferência! 🙏`
 
               <div className="relative z-10 text-center max-w-6xl mx-auto px-4">
                 <div className="mb-6 md:mb-8 animate-fade-in-up">
+                  <div className="flex justify-center mb-6 md:mb-8">
+                    <Image
+                      src="/rv-store-logo.png"
+                      alt="RV Store Logo"
+                      width={120}
+                      height={120}
+                      className="md:w-40 md:h-40 rounded-full shadow-2xl border-4 border-white/20"
+                    />
+                  </div>
                   <h2 className="text-4xl md:text-6xl lg:text-8xl font-bold text-white mb-4 md:mb-6 leading-tight">
                     <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
                       RV STORE
@@ -1657,7 +1696,7 @@ Obrigado pela preferência! 🙏`
                   </div>
                   <div className="text-center group">
                     <div className="w-12 h-12 md:w-20 md:h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
-                      <Heart className="h-6 w-6 md:h-10 md:w-10 text-white" />
+                      <Heart className="h-6 w-6 md:h-10 md:h-10 text-white" />
                     </div>
                     <h4 className="text-lg md:text-2xl font-bold mb-2 md:mb-4">Atendimento Premium</h4>
                     <p className="text-gray-300 leading-relaxed text-sm md:text-base">
@@ -2018,6 +2057,98 @@ Obrigado pela preferência! 🙏`
           backdrop-filter: blur(12px);
         }
       `}</style>
+
+      {showProductModal && selectedProduct && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowProductModal(false)}
+                className="absolute top-4 right-4 z-10 bg-white/80 backdrop-blur-sm hover:bg-white"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+
+              <div className="aspect-square relative">
+                <Image
+                  src={selectedProduct.image || "/placeholder.svg"}
+                  alt={selectedProduct.name}
+                  fill
+                  className="object-cover rounded-t-2xl"
+                />
+              </div>
+
+              <div className="p-6">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <Badge className="bg-black/10 text-black">{selectedProduct.category}</Badge>
+                  {selectedProduct.isPromotion && (
+                    <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white">OFERTA</Badge>
+                  )}
+                  {selectedProduct.isNew && (
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">NOVO</Badge>
+                  )}
+                  {selectedProduct.isBestSeller && (
+                    <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">⭐ BEST</Badge>
+                  )}
+                </div>
+
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{selectedProduct.name}</h2>
+                <p className="text-gray-600 mb-4 text-sm sm:text-base">{selectedProduct.description}</p>
+
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${
+                          i < Math.floor(selectedProduct.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-500">({selectedProduct.reviews} avaliações)</span>
+                </div>
+
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex flex-col">
+                    {selectedProduct.originalPrice && selectedProduct.originalPrice > selectedProduct.price && (
+                      <span className="text-lg text-gray-400 line-through">
+                        R$ {selectedProduct.originalPrice.toFixed(2)}
+                      </span>
+                    )}
+                    <span className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                      R$ {selectedProduct.price.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Tamanho:</label>
+                    <div className="flex gap-2 flex-wrap">
+                      {selectedProduct.sizes.map((size) => (
+                        <Button key={size} variant="outline" size="sm" className="min-w-[3rem] bg-transparent">
+                          {size}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Button
+                    size="lg"
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                  >
+                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    Adicionar ao Carrinho
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
