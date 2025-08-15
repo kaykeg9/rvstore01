@@ -657,48 +657,29 @@ Obrigado pela preferência! 🙏`
 
     return (
       <Card
-        className={`group cursor-pointer hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-0 overflow-hidden ${
-          featured ? "ring-2 ring-gradient-to-r from-purple-500 to-pink-500" : ""
+        className={`cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-white border border-gray-200 ${
+          featured ? "border-blue-300" : ""
         } ${compact ? "h-full" : ""}`}
         onClick={() => !isAdminView && handleProductClick(product)}
       >
         <CardContent className="p-0">
           <div className={`${compact ? "aspect-[4/3]" : "aspect-square"} relative overflow-hidden`}>
-            <Image
-              src={product.image || "/placeholder.svg"}
-              alt={product.name}
-              fill
-              className="object-cover group-hover:scale-110 transition-transform duration-700"
-            />
+            <Image src={product.image || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
 
-            {/* Overlay gradiente */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-            {/* Badges */}
             <div className="absolute top-2 left-2 flex flex-col gap-1">
-              <div className="bg-black/80 backdrop-blur-sm text-white px-2 py-1 text-xs rounded-full font-medium">
-                {product.category}
-              </div>
+              <div className="bg-gray-800 text-white px-2 py-1 text-xs rounded font-medium">{product.category}</div>
               {product.isPromotion && (
-                <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-2 py-1 text-xs rounded-full font-bold animate-pulse">
-                  OFERTA
-                </div>
+                <div className="bg-red-500 text-white px-2 py-1 text-xs rounded font-bold">OFERTA</div>
               )}
-              {product.isNew && (
-                <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-2 py-1 text-xs rounded-full font-bold">
-                  NOVO
-                </div>
-              )}
+              {product.isNew && <div className="bg-green-500 text-white px-2 py-1 text-xs rounded font-bold">NOVO</div>}
               {product.isBestSeller && (
-                <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-2 py-1 text-xs rounded-full font-bold">
-                  ⭐ BEST
-                </div>
+                <div className="bg-yellow-500 text-white px-2 py-1 text-xs rounded font-bold">⭐ BEST</div>
               )}
             </div>
 
             {/* Rating */}
             {!isAdminView && (
-              <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center gap-1">
+              <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded flex items-center gap-1 shadow-sm">
                 <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                 <span className="text-xs font-medium">{product.rating}</span>
               </div>
@@ -706,12 +687,12 @@ Obrigado pela preferência! 🙏`
 
             {/* Admin Controls */}
             {isAdminView && (
-              <div className="absolute bottom-2 right-2 flex gap-1 transition-opacity duration-300">
+              <div className="absolute bottom-2 right-2 flex gap-1">
                 <Button
                   size="sm"
                   variant="secondary"
                   onClick={() => handleEditProduct(product)}
-                  className="bg-white/90 backdrop-blur-sm hover:bg-white"
+                  className="bg-white hover:bg-gray-100"
                 >
                   <Edit className="h-3 w-3" />
                 </Button>
@@ -719,7 +700,7 @@ Obrigado pela preferência! 🙏`
                   size="sm"
                   variant="secondary"
                   onClick={() => toggleProductStatus(product.id)}
-                  className="bg-white/90 backdrop-blur-sm hover:bg-white"
+                  className="bg-white hover:bg-gray-100"
                 >
                   {product.isActive ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
                 </Button>
@@ -727,7 +708,7 @@ Obrigado pela preferência! 🙏`
                   size="sm"
                   variant="destructive"
                   onClick={() => handleDeleteProduct(product.id)}
-                  className="bg-red-500/90 backdrop-blur-sm hover:bg-red-600"
+                  className="bg-red-500 hover:bg-red-600"
                 >
                   <Trash2 className="h-3 w-3" />
                 </Button>
@@ -735,21 +716,17 @@ Obrigado pela preferência! 🙏`
             )}
           </div>
 
-          <div className={`${compact ? "p-2 sm:p-3" : "p-3 sm:p-6"}`}>
-            <h4
-              className={`font-bold ${compact ? "text-base sm:text-lg mb-1" : "text-lg sm:text-xl mb-2"} text-gray-900 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 transition-all duration-300`}
-            >
+          <div className={`${compact ? "p-3" : "p-4"}`}>
+            <h4 className={`font-semibold ${compact ? "text-sm mb-1" : "text-base mb-2"} text-gray-900`}>
               {product.name}
             </h4>
-            <p
-              className={`text-gray-600 ${compact ? "text-xs sm:text-sm mb-2 line-clamp-1" : "text-sm mb-4 line-clamp-2"}`}
-            >
+            <p className={`text-gray-600 ${compact ? "text-xs mb-2 line-clamp-1" : "text-sm mb-3 line-clamp-2"}`}>
               {product.description}
             </p>
 
             {/* Reviews */}
             {!isAdminView && !compact && (
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-2 mb-3">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -765,7 +742,7 @@ Obrigado pela preferência! 🙏`
             )}
 
             {isAdminView && (
-              <div className="mb-4 flex gap-2 flex-wrap">
+              <div className="mb-3 flex gap-2 flex-wrap">
                 <Badge variant={product.isActive ? "default" : "secondary"} className="text-xs">
                   {product.isActive ? "Ativo" : "Inativo"}
                 </Badge>
@@ -781,19 +758,15 @@ Obrigado pela preferência! 🙏`
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 {product.originalPrice && product.originalPrice > product.price && (
-                  <span className="text-xs sm:text-sm text-gray-400 line-through">
-                    R$ {product.originalPrice.toFixed(2)}
-                  </span>
+                  <span className="text-sm text-gray-400 line-through">R$ {product.originalPrice.toFixed(2)}</span>
                 )}
-                <span
-                  className={`font-bold ${compact ? "text-lg sm:text-xl" : "text-xl sm:text-2xl"} bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent`}
-                >
+                <span className={`font-bold ${compact ? "text-lg" : "text-xl"} text-green-600`}>
                   R$ {product.price.toFixed(2)}
                 </span>
               </div>
 
               {!isAdminView && (
-                <div className="flex flex-col gap-1 sm:gap-2">
+                <div className="flex flex-col gap-2">
                   {showSizeSelector && (
                     <div className="flex gap-1 mb-2">
                       {product.sizes.map((size) => (
@@ -818,10 +791,10 @@ Obrigado pela preferência! 🙏`
                       e.stopPropagation()
                       handleAddToCart()
                     }}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2"
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2"
                   >
-                    <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                    Comprar
+                    <ShoppingCart className="h-4 w-4 mr-1" />
+                    Adicionar ao Carrinho
                   </Button>
                 </div>
               )}
@@ -1605,21 +1578,19 @@ Obrigado pela preferência! 🙏`
               </div>
             </section>
 
-            {/* Ofertas Section - Layout Horizontal */}
+            {/* Ofertas Section */}
             {promotions.length > 0 && (
-              <section className="py-16 md:py-20 bg-gradient-to-br from-red-50 to-pink-50">
+              <section className="py-16 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="text-center mb-12 md:mb-16">
-                    <h3 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent mb-3 md:mb-4">
-                      🔥 Ofertas Imperdíveis
-                    </h3>
-                    <div className="w-16 md:w-24 h-0.5 md:h-1 bg-gradient-to-r from-red-500 to-pink-500 mx-auto mb-4 md:mb-6 rounded-full"></div>
-                    <p className="text-base md:text-xl text-gray-600 max-w-2xl mx-auto">
+                  <div className="text-center mb-12">
+                    <h3 className="text-3xl md:text-4xl font-bold text-red-600 mb-4">🔥 Ofertas Imperdíveis</h3>
+                    <div className="w-20 h-1 bg-red-500 mx-auto mb-6 rounded"></div>
+                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                       Aproveite nossos preços especiais por tempo limitado!
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {promotions.map((product, index) => (
                       <div
                         key={product.id}
@@ -1634,20 +1605,18 @@ Obrigado pela preferência! 🙏`
               </section>
             )}
 
-            {/* Featured Products Premium */}
-            <section className="py-16 md:py-20 bg-gradient-to-br from-gray-50 to-white">
+            {/* Featured Products */}
+            <section className="py-16 bg-white">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-12 md:mb-16">
-                  <h3 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-3 md:mb-4">
-                    Produtos em Destaque
-                  </h3>
-                  <div className="w-16 md:w-24 h-0.5 md:h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mb-4 md:mb-6 rounded-full"></div>
-                  <p className="text-base md:text-xl text-gray-600 max-w-2xl mx-auto">
+                <div className="text-center mb-12">
+                  <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Produtos em Destaque</h3>
+                  <div className="w-20 h-1 bg-blue-500 mx-auto mb-6 rounded"></div>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                     Descubra nossa seleção exclusiva de peças que definem tendências
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   {bestSellers.slice(0, 4).map((product, index) => (
                     <div key={product.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
                       <ProductCard product={product} featured={true} />
@@ -1655,13 +1624,13 @@ Obrigado pela preferência! 🙏`
                   ))}
                 </div>
 
-                <div className="text-center mt-8 md:mt-12">
+                <div className="text-center mt-12">
                   <Button
                     onClick={() => setCurrentSection("produtos")}
-                    className="bg-gradient-to-r from-gray-900 to-black hover:from-black hover:to-gray-800 text-white px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    className="bg-gray-900 hover:bg-black text-white px-8 py-3 rounded font-semibold transition-colors duration-300"
                   >
                     Ver Todos os Produtos
-                    <ArrowRight className="h-4 w-4 md:h-5 md:w-5 ml-2" />
+                    <ArrowRight className="h-5 w-5 ml-2" />
                   </Button>
                 </div>
               </div>
@@ -1776,7 +1745,7 @@ Obrigado pela preferência! 🙏`
                   </Button>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   {activeProducts.map((product, index) => (
                     <div key={product.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
                       <ProductCard product={product} />
